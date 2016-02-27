@@ -17,13 +17,6 @@ indexes:
   - name: timestamp
 
 - kind: BlogPost
-  properties:
-  - name: author
-  - name: published
-  - name: timestamp
-    direction: desc
-
-- kind: BlogPost
   ancestor: yes
   properties:
   - name: published
