@@ -1,5 +1,3 @@
-application: blogysaimanojkumar
-version: v1
 runtime: python27
 api_version: 1
 threadsafe: true
@@ -20,11 +18,11 @@ handlers:
   static_dir: static
 
 - url: /blog/admin.*
-  script: blog.app
+  script: gae_blog.blog.app
   login: admin
 
 - url: /blog.*
-  script: blog.app
+  script: gae_blog.blog.app
 
 # If GAE Blog is a submodule then you need to copy these handlers to your own app.yaml
 # and modify their paths to include the directory where GAE Blog is located.

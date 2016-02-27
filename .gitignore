@@ -5,4 +5,8 @@
 index.yaml
 
 # exclude minimized files
-*.min.js
+#*.min.js
+
+# exclude pycharm project files
+.idea/
+

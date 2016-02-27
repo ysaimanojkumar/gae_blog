@@ -1,6 +1,6 @@
 [submodule "lib/gae_validators"]
-	path = lib/gae_validators
+	path = gae_blog/lib/gae_validators
 	url = https://github.com/bdoms/gae_validators.git
 [submodule "lib/webtest"]
-	path = lib/webtest
+	path = gae_blog/lib/webtest
 	url = https://github.com/Pylons/webtest
