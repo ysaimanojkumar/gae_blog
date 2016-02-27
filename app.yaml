@@ -15,7 +15,7 @@ libraries:
 
 handlers:
 - url: /blog/static
-  static_dir: static
+  static_dir: gae_blog/static
 
 - url: /blog/admin.*
   script: gae_blog.blog.app

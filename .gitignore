@@ -2,7 +2,7 @@
 *.pyc
 
 # exclude the index file
-index.yaml
+# index.yaml
 
 # exclude minimized files
 #*.min.js
