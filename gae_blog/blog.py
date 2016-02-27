@@ -18,6 +18,7 @@ ROUTES = []
 
 for url in BLOG_URLS:
     ROUTES.extend([(url, index.IndexController),
+                   (url + '/', index.IndexController),
                    (url + '/feed', feed.FeedController),
                    (url + '/contact', contact.ContactController),
                    (url + '/post/(.[^/]+)', post.PostController),
