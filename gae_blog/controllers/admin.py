@@ -4,6 +4,7 @@ from google.appengine.api import users, memcache, images
 from google.appengine.ext import blobstore, ndb
 from google.appengine.ext.webapp import blobstore_handlers
 
+
 from base import FormController
 
 from gae_blog.lib.gae_validators import (validateString, validateRequiredString, validateText, validateEmail,
@@ -227,7 +228,14 @@ class PostsController(AdminController):
             if post:
                 # delete all the post's comments first
                 if post.comments.count() > 0:
-                    model.db.delete(list(post.comments))
+                    for comment in post.comments:
+                        comment.key.delete()
+                    '''
+                        keys = []
+                        for comment in post.comments:
+                            keys.append(comment.key)
+                        ndb.delete_multi(keys)
+                    '''
                 # then the post itself
                 post.key.delete()
                 clearCache(self.blog)
@@ -511,7 +519,9 @@ class ImageController(AdminController, blobstore_handlers.BlobstoreUploadHandler
 
             form_data, errors = self.errorsFromSession()
 
-            self.renderTemplate('admin/image.html', errors=errors, page_title=page_title, logout_url=self.logout_url)
+            upload_url = blobstore.create_upload_url('/admin/image',max_bytes_per_blob=10*1000*1000)
+            self.renderTemplate('admin/image.html', errors=errors, page_title=page_title, logout_url=self.logout_url,
+                                upload_url=upload_url)
 
     def post(self):
         upload_files = self.get_uploads('data')  # 'data' is file upload field in the form
