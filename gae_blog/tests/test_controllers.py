@@ -15,12 +15,15 @@ from controllers import admin as controller_admin
 from base import BaseTestCase, UCHAR, model
 
 
+BLOG_URLS = ['']
+
+
 class BaseTestController(BaseTestCase):
 
     def setUp(self):
         super(BaseTestController, self).setUp()
         # this must be imported after the above setup in order for the stubs to work
-        from blog import app, BLOG_URLS
+        from blog import app
 
         # override test app so that we can get pages relative to the blog url
         class BlogTestApp(TestApp):
@@ -64,7 +67,7 @@ class BaseTestController(BaseTestCase):
 
     def getVerifyToken(self, path):
         # some requests need a verification token so this test isn't considered a bot
-        data = {"url": "http://localhost/blog" + path}
+        data = {"url": "http://localhost/" + path}
         headers = [("referer", "http://localhost")]
         response = self.app.get('/verify', data, headers=headers)
         response = str(response)
@@ -379,7 +382,7 @@ class TestForm(BaseMockController):
         memcache.set(self.controller.SALT_KEY, salt)
         dt = datetime.datetime(2000, 1, 1)
 
-        result = self.controller.generateToken("/blog/test-path", timestamp=dt)
+        result = self.controller.generateToken("/test-path", timestamp=dt)
         
         assert result == "4a4659bd137f6296ac850e4b57aef19e49ec98a2e3d8dfb518a8900c24765fbc256ddc0991d4cb33a540453d3a9a5d3c574fd91e0b991366c923c48824a602a5"
 
@@ -823,14 +826,14 @@ class TestPingback(BaseTestController):
         assert '<fault>' in response
         assert 'Invalid Request' in response
 
-        params = (params[0], "http://localhost/blog/post/")
+        params = (params[0], "http://localhost/post/")
         body = xmlrpclib.dumps(params, "pingback.ping")
         response = self.app.request('/pingback', method='POST', body=body)
         assert '<fault>' in response
         assert 'Post ID Not Found' in response
 
         # still no post
-        params = (params[0], "http://localhost/blog/post/post-title")
+        params = (params[0], "http://localhost/post/post-title")
         body = xmlrpclib.dumps(params, "pingback.ping")
         response = self.app.request('/pingback', method='POST', body=body)
         assert '<fault>' in response
@@ -839,7 +842,7 @@ class TestPingback(BaseTestController):
         # not published
         post = self.createPost()
         post.published = False
-        params = (params[0], "http://localhost/blog/post/" + post.slug)
+        params = (params[0], "http://localhost/post/" + post.slug)
         body = xmlrpclib.dumps(params, "pingback.ping")
         response = self.app.request('/pingback', method='POST', body=body)
         assert '<fault>' in response
@@ -904,17 +907,17 @@ class TestWebmention(BaseTestController):
         data["target"] = "not a URL"
         assert self.app.post('/webmention', data, status=400)
 
-        data["target"] = "http://localhost/blog/post/"
+        data["target"] = "http://localhost/post/"
         assert self.app.post('/webmention', data, status=404)
 
         # still no post
-        data["target"] = "http://localhost/blog/post/post-title"
+        data["target"] = "http://localhost/post/post-title"
         assert self.app.post('/webmention', data, status=404)
 
         # not published
         post = self.createPost()
         post.published = False
-        data["target"] = "http://localhost/blog/post/" + post.slug
+        data["target"] = "http://localhost/post/" + post.slug
         assert self.app.post('/webmention', data, status=404)
 
         post.published = True
@@ -954,7 +957,7 @@ class TestWebmention(BaseTestController):
 class TestVerify(BaseTestController):
 
     def test_verify(self):
-        data = {"url": "http://localhost/blog" }
+        data = {"url": "http://localhost" }
 
         # no referer
         assert self.app.get('/verify', data, status=400)
@@ -1255,14 +1258,14 @@ class TestAdmin(BaseTestController):
         post.published = True
 
         keys = controller_admin.getCacheKeys(self.blog)
-        assert keys == ['/blog', '/blog/contact', '/blog/feed', '/blog/post/test-post', '/blog/author/test-author']
+        assert keys == ['/', '/contact', '/feed', '/post/test-post', '/author/test-author']
 
     def test_getDatastoreKeys(self):
         post = self.createPost()
         post.published = True
 
         keys = controller_admin.getDatastoreKeys(self.blog)
-        assert keys == [model.ndb.Key('HTMLCache', '/blog/feed')]
+        assert keys == [model.ndb.Key('HTMLCache', '/feed')]
 
     def test_clearCache(self):
         post = self.createPost()

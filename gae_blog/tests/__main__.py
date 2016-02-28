@@ -19,7 +19,10 @@ dev_appserver.fix_sys_path()
 sys.path.append('.')
 
 # needed to be able to import the third party libraries
-from config import BLOG_PATH
+
+#BLOG_PATH = os.path.dirname(os.path.join(os.path.abspath(__file__), os.path.pardir))
+BLOG_PATH = '/home/saimanoj/appEngineProjects/blog-ysaimanojkumar/gae_blog'
+print BLOG_PATH
 sys.path.append(os.path.dirname(BLOG_PATH))
 sys.path.append(os.path.join(BLOG_PATH, 'lib', 'webtest'))
 

@@ -158,11 +158,11 @@ class BaseController(webapp2.RequestHandler):
 
     @webapp2.cached_property
     def blog_slug(self):
-        return self.request.path.split('/')[1] # we add the slash for easy URL making
+        return '/'
 
     @webapp2.cached_property
     def blog_url(self):
-        return '/' + self.blog_slug
+        return ''
 
     def errorsFromSession(self):
         form_data = self.session.pop("form_data", {})
@@ -221,6 +221,7 @@ class FormController(BaseController):
                 return self.renderError(400)
             
             valid, data = validator(form_data[name])
+
             if valid:
                 valid_data[name] = data
             else:

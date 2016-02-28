@@ -14,14 +14,18 @@ libraries:
   version: latest
 
 handlers:
-- url: /blog/static
+- url: /static
   static_dir: gae_blog/static
 
-- url: /blog/admin.*
+- url: /admin
   script: gae_blog.blog.app
   login: admin
 
-- url: /blog.*
+- url: /admin/.*
+  script: gae_blog.blog.app
+  login: admin
+
+- url: /.*
   script: gae_blog.blog.app
 
 # If GAE Blog is a submodule then you need to copy these handlers to your own app.yaml

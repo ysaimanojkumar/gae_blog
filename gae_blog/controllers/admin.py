@@ -37,6 +37,7 @@ class AdminController(FormController):
             self.renderTemplate('admin/index.html', blog=blog, other_blogs=other_blogs, page_title="Admin", logout_url=self.logout_url)
 
         else:
+            print self.blog_url
             self.redirect(self.blog_url + '/admin/blog')
 
     @property
@@ -88,6 +89,7 @@ class BlogController(AdminController):
         del valid_data["url"]
 
         if blog:
+            print blog
             # if the URL is different, remake the entities since the key name needs to change
             if url != blog.slug:
                 # each blog is its own entity group, so can't run in a transaction
